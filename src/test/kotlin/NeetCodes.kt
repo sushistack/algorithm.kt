@@ -47,6 +47,28 @@ class NeetCodes {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+    @ParameterizedTest
+    @MethodSource("isPalindromeProvider")
+    @DisplayName(
+        "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.\n" +
+        "Given a string s, return true if it is a palindrome, or false otherwise."
+    )
+    fun isPalindrome(s: String, expected: Boolean) {
+        val words = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        val str = s.filter { it in words }.lowercase()
+
+        var answer = true
+        if (str.isEmpty()) answer = false
+        else {
+            for (i in 0..(str.length / 2)) {
+                if (str[i] != str[str.length - i - 1]) {
+                    answer = false
+                }
+            }
+        }
+        Assertions.assertThat(answer).isEqualTo(expected)
+    }
+
 
     companion object {
         @JvmStatic
@@ -62,6 +84,14 @@ class NeetCodes {
                 arguments(arrayOf(2,7,11,15).toIntArray(), 9, arrayOf(0,1).toIntArray()),
                 arguments(arrayOf(3,2,4).toIntArray(), 6, arrayOf(1,2).toIntArray()),
                 arguments(arrayOf(3,3).toIntArray(), 6, arrayOf(0,1).toIntArray()),
+            )
+
+        @JvmStatic
+        fun isPalindromeProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments("A man, a plan, a canal: Panama", true),
+                arguments("race a car", false),
+                arguments("0P", false)
             )
     }
 }
