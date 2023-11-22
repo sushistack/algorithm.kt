@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.util.*
 import java.util.stream.Stream
 import kotlin.math.max
 import kotlin.math.min
@@ -69,6 +70,38 @@ class NeetCodes {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+    @ParameterizedTest
+    @MethodSource("isValidParenthesesProvider")
+    @DisplayName("""
+            Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+            An input string is valid if:
+            1. Open brackets must be closed by the same type of brackets.
+            2. Open brackets must be closed in the correct order.
+            3. Every close bracket has a corresponding open bracket of the same type.
+    """)
+    fun isValidParentheses(s: String, expected: Boolean) {
+        val stack = Stack<Char>()
+        s.forEach {
+            if (stack.empty()) {
+                stack.push(it)
+            } else {
+                if (stack.peek() == getPartner(it)) {
+                    stack.pop()
+                } else {
+                    stack.push(it)
+                }
+            }
+        }
+        Assertions.assertThat(stack.isEmpty()).isEqualTo(expected)
+    }
+
+    private fun getPartner(c: Char) = when (c) {
+        '}' -> '{'
+        ']' -> '['
+        ')' -> '('
+        else -> ' '
+    }
+
 
     companion object {
         @JvmStatic
@@ -93,5 +126,15 @@ class NeetCodes {
                 arguments("race a car", false),
                 arguments("0P", false)
             )
+
+        @JvmStatic
+        fun isValidParenthesesProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments("()", true),
+                arguments("()[]{}", true),
+                arguments("(]", false),
+                arguments("([])", true)
+            )
+
     }
 }
