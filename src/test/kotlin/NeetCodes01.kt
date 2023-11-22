@@ -9,7 +9,7 @@ import java.util.stream.Stream
 import kotlin.math.max
 import kotlin.math.min
 
-class NeetCodes {
+class NeetCodes01 {
 
     @ParameterizedTest
     @MethodSource("topKFrequentProvider")
