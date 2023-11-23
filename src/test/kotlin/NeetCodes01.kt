@@ -1,5 +1,6 @@
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
@@ -11,6 +12,8 @@ import kotlin.math.min
 
 class NeetCodes01 {
 
+    @Tag("Medium")
+    @Tag("ArrayHashing")
     @ParameterizedTest
     @MethodSource("topKFrequentProvider")
     @DisplayName("Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.")
@@ -27,6 +30,8 @@ class NeetCodes01 {
         Assertions.assertThat(a).isEqualTo(expected)
     }
 
+    @Tag("Easy")
+    @Tag("ArrayHashing")
     @ParameterizedTest
     @MethodSource("twoSumProvider")
     @DisplayName(
@@ -48,6 +53,8 @@ class NeetCodes01 {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+    @Tag("Easy")
+    @Tag("TwoPoint")
     @ParameterizedTest
     @MethodSource("isPalindromeProvider")
     @DisplayName(
@@ -70,6 +77,9 @@ class NeetCodes01 {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+
+    @Tag("Easy")
+    @Tag("Stack")
     @ParameterizedTest
     @MethodSource("isValidParenthesesProvider")
     @DisplayName("""
@@ -102,6 +112,8 @@ class NeetCodes01 {
         else -> ' '
     }
 
+    @Tag("Easy")
+    @Tag("SlideWindow")
     @ParameterizedTest
     @MethodSource("maxProfitProvider")
     @DisplayName("""
