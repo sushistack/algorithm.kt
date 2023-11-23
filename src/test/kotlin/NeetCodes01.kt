@@ -107,16 +107,17 @@ class NeetCodes01 {
         @JvmStatic
         fun topKFrequentProvider(): Stream<Arguments> =
             Stream.of(
-                arguments(arrayOf(1,1,1,2,2,3).toIntArray(), 2, arrayOf(1,2).toIntArray()),
-                arguments(arrayOf(1).toIntArray(), 1, arrayOf(1).toIntArray()),
+                Arguments.of(intArrayOf(1,1,1,2,2,3), 2, intArrayOf(1,2)),
+                Arguments.of(intArrayOf(1), 1, intArrayOf(1)),
+                Arguments.of(intArrayOf(1,2), 2, intArrayOf(1,2)),
             )
 
         @JvmStatic
         fun twoSumProvider(): Stream<Arguments> =
             Stream.of(
-                arguments(arrayOf(2,7,11,15).toIntArray(), 9, arrayOf(0,1).toIntArray()),
-                arguments(arrayOf(3,2,4).toIntArray(), 6, arrayOf(1,2).toIntArray()),
-                arguments(arrayOf(3,3).toIntArray(), 6, arrayOf(0,1).toIntArray()),
+                arguments(intArrayOf(2,7,11,15), 9, intArrayOf(0,1)),
+                arguments(intArrayOf(3,2,4), 6, intArrayOf(1,2)),
+                arguments(intArrayOf(3,3), 6, intArrayOf(0,1)),
             )
 
         @JvmStatic
