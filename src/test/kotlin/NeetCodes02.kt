@@ -37,6 +37,26 @@ class NeetCodes02 {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+    @Tag("Easy")
+    @Tag("LinkedList")
+    @ParameterizedTest
+    @MethodSource("reverseListProvider")
+    @DisplayName("Given the beginning of a singly linked list head, reverse the list, and return the new beginning of the list.")
+    fun reverseList(head: ListNode?) {
+        var prevNode: ListNode? = null
+        var curNode = head
+        var nextNode: ListNode?
+        while (curNode != null) {
+            nextNode = curNode.next
+            curNode.next = prevNode
+
+            prevNode = curNode
+            curNode = nextNode
+        }
+
+        println(prevNode)
+    }
+
     companion object {
         @JvmStatic
         fun binarySearchProvider(): Stream<Arguments> =
@@ -44,5 +64,23 @@ class NeetCodes02 {
                 Arguments.arguments(listOf(-1,0,3,5,9,12).toIntArray(), 9, 4),
                 Arguments.arguments(listOf(-1,0,3,5,9,12).toIntArray(), 2, -1)
             )
+
+        @JvmStatic
+        fun reverseListProvider(): Stream<Arguments> {
+            val listNode5 = ListNode(5)
+            val listNode4 = ListNode(4).also { it.next = listNode5 }
+            val listNode3 = ListNode(3).also { it.next = listNode4 }
+            val listNode2 = ListNode(2).also { it.next = listNode3 }
+            val listNode1 = ListNode(1).also { it.next = listNode2 }
+
+            return Stream.of(
+                Arguments.of(listNode1)
+            )
+        }
+    }
+
+    class ListNode(var `val`: Int) {
+        var next: ListNode? = null
     }
 }
+
