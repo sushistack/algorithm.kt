@@ -57,6 +57,52 @@ class NeetCodes03 {
         Assertions.assertThat(dp[n]).isEqualTo(expected)
     }
 
+    @Tag("Medium")
+    @Tag("Graph")
+    @ParameterizedTest
+    @MethodSource("numIslandsProvider")
+    @DisplayName("""
+        Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+        An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+    """)
+    fun numIslands(grid: Array<CharArray>, expected: Int) {
+        val map = grid.map { r -> r.map { c -> LandOrWater(isLand = c == '1') } }
+        var islands = 0
+        for (r in grid.indices) {
+            for (c in grid[r].indices) {
+                if (dfs2(r, c, map)) {
+                    islands++
+                }
+            }
+        }
+        Assertions.assertThat(islands).isEqualTo(expected)
+    }
+
+    private fun dfs2(r: Int, c: Int, map: List<List<LandOrWater>>): Boolean {
+        if (!map[r][c].isLand || map[r][c].visited) return false
+
+        map[r][c].visited = true
+        val nexts = listOf((r + 1) to c, (r - 1) to c, r to (c + 1), r to (c - 1))
+        for (next in nexts) {
+            if (next.first < 0 || next.first >= map.size || next.second < 0 || next.second >= map[r].size) {
+                continue
+            }
+
+            if (!map[next.first][next.second].isLand || map[next.first][next.second].visited) {
+                continue
+            }
+
+            dfs2(next.first, next.second, map)
+        }
+
+        return true
+    }
+
+    class LandOrWater(
+        val isLand: Boolean,
+        var visited: Boolean = false
+    )
+
     companion object {
         @JvmStatic
         fun subsetsProvider(): Stream<Arguments> =
@@ -69,6 +115,29 @@ class NeetCodes03 {
             Stream.of(
                 arguments(2, 2),
                 arguments(3, 3)
+            )
+
+        @JvmStatic
+        fun numIslandsProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    arrayOf(
+                        charArrayOf('1','1','1','1','0'),
+                        charArrayOf('1','1','0','1','0'),
+                        charArrayOf('1','1','0','0','0'),
+                        charArrayOf('0','0','0','0','0')
+                    ),
+                    1
+                ),
+                arguments(
+                    arrayOf(
+                        charArrayOf('1','1','0','0','0'),
+                        charArrayOf('1','1','0','0','0'),
+                        charArrayOf('0','0','1','0','0'),
+                        charArrayOf('0','0','0','1','1')
+                    ),
+                    3
+                )
             )
     }
 
