@@ -6,6 +6,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
+import kotlin.math.max
+import kotlin.math.min
 
 class NeetCodes03 {
 
@@ -103,6 +105,34 @@ class NeetCodes03 {
         var visited: Boolean = false
     )
 
+    @Tag("Medium")
+    @Tag("Interval")
+    @ParameterizedTest
+    @MethodSource("insertProvider")
+    @DisplayName("""
+        Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+        An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+    """)
+    fun insert(intervals: Array<IntArray>, newInterval: IntArray) {
+        val ints = intervals.map { it.toList() }.toMutableList()
+        var new = newInterval
+        val res = mutableListOf<IntArray>()
+        for (i in intervals.indices) {
+            if (newInterval[1] < intervals[i][0]) {
+                res.add(new)
+                res.addAll(intervals.filterIndexed { index, _ -> index >= i })
+                /*return*/ res.toTypedArray()
+            } else if (ints[i][1] < new[0]) {
+                res.add(ints[i].toIntArray())
+            } else {
+                new = intArrayOf(min(new[0], ints[i][0]), max(new[1], ints[i][1]))
+            }
+        }
+        res.add(new)
+        /*return*/ res.toTypedArray()
+    }
+
+
     companion object {
         @JvmStatic
         fun subsetsProvider(): Stream<Arguments> =
@@ -137,6 +167,16 @@ class NeetCodes03 {
                         charArrayOf('0','0','0','1','1')
                     ),
                     3
+                )
+            )
+
+        @JvmStatic
+        fun insertProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    arrayOf(intArrayOf(1,3), intArrayOf(6,9)),
+                    intArrayOf(2, 5),
+                    arrayOf(intArrayOf(1,5), intArrayOf(6,9))
                 )
             )
     }
