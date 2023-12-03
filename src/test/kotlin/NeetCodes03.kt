@@ -132,6 +132,25 @@ class NeetCodes03 {
         /*return*/ res.toTypedArray()
     }
 
+    @Tag("Medium")
+    @Tag("Greedy")
+    @ParameterizedTest
+    @MethodSource("maxSubArrayProvider")
+    @DisplayName("Given an integer array nums, find the subarray with the largest sum, and return its sum.")
+    fun maxSubArray(nums: IntArray, expected: Int) {
+        var max = nums[0]
+        var curSum = 0
+
+        for (num in nums) {
+            if (curSum < 0) {
+                curSum = 0
+            }
+            curSum += num
+            max = max(max, curSum)
+        }
+
+        Assertions.assertThat(max).isEqualTo(expected)
+    }
 
     companion object {
         @JvmStatic
@@ -178,6 +197,14 @@ class NeetCodes03 {
                     intArrayOf(2, 5),
                     arrayOf(intArrayOf(1,5), intArrayOf(6,9))
                 )
+            )
+
+        @JvmStatic
+        fun maxSubArrayProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(intArrayOf(-2,1,-3,4,-1,2,1,-5,4), 6),
+                arguments(intArrayOf(1), 1),
+                arguments(intArrayOf(5,4,-1,7,8), 23),
             )
     }
 
