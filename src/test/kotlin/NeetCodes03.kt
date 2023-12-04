@@ -152,6 +152,35 @@ class NeetCodes03 {
         Assertions.assertThat(max).isEqualTo(expected)
     }
 
+
+    @Tag("Medium")
+    @Tag("Greedy")
+    @ParameterizedTest
+    @MethodSource("uniquePathsProvider")
+    @DisplayName("""There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). 
+        The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.
+    """)
+    fun uniquePaths(m: Int, n: Int, expected: Int) {
+        val dp = Array(m + 1) { Array(n + 1) { 0 } }
+
+        for (i in 0..< m) {
+            dp[i][0] = 1
+        }
+
+        for (i in 0..< n) {
+            dp[0][i] = 1
+        }
+
+        for (i in 1..<m) {
+            for (j in 1..<n) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
+            }
+        }
+
+        Assertions.assertThat(dp[m - 1][n - 1]).isEqualTo(expected)
+    }
+
+
     companion object {
         @JvmStatic
         fun subsetsProvider(): Stream<Arguments> =
@@ -205,6 +234,13 @@ class NeetCodes03 {
                 arguments(intArrayOf(-2,1,-3,4,-1,2,1,-5,4), 6),
                 arguments(intArrayOf(1), 1),
                 arguments(intArrayOf(5,4,-1,7,8), 23),
+            )
+
+        @JvmStatic
+        fun uniquePathsProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(3, 7, 28),
+                arguments(3, 2, 3)
             )
     }
 
