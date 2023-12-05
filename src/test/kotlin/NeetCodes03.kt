@@ -180,6 +180,19 @@ class NeetCodes03 {
         Assertions.assertThat(dp[m - 1][n - 1]).isEqualTo(expected)
     }
 
+    @Tag("Easy")
+    @Tag("BitOperation")
+    @ParameterizedTest
+    @MethodSource("singleNumberProvider")
+    @DisplayName("""Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.
+        You must implement a solution with a linear runtime complexity and use only constant extra space.
+    """)
+    fun singleNumber(nums: IntArray, expected: Int) {
+        var res = 0
+        nums.forEach { res = (res xor it) }
+        Assertions.assertThat(res).isEqualTo(expected)
+    }
+
 
     companion object {
         @JvmStatic
@@ -241,6 +254,14 @@ class NeetCodes03 {
             Stream.of(
                 arguments(3, 7, 28),
                 arguments(3, 2, 3)
+            )
+
+        @JvmStatic
+        fun singleNumberProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(intArrayOf(2,2,1), 1),
+                arguments(intArrayOf(4,1,2,1,2), 4),
+                arguments(intArrayOf(1), 1)
             )
     }
 
