@@ -54,7 +54,7 @@ class NeetCodes01 {
     }
 
     @Tag("Easy")
-    @Tag("TwoPoint")
+    @Tag("TwoPointer")
     @ParameterizedTest
     @MethodSource("isPalindromeProvider")
     @DisplayName(
