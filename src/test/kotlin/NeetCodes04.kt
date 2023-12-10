@@ -58,6 +58,52 @@ class NeetCodes04 {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+    @Tag("Medium")
+    @Tag("BinarySearch")
+    @ParameterizedTest
+    @MethodSource("searchMatrixProvider")
+    @DisplayName("""You are given an m x n integer matrix matrix with the following two properties:
+        Each row is sorted in non-decreasing order.
+        The first integer of each row is greater than the last integer of the previous row.
+        Given an integer target, return true if target is in matrix or false otherwise.
+        You must write a solution in O(log(m * n)) time complexity.
+    """)
+    fun searchMatrix(matrix: Array<IntArray>, target: Int, expected: Boolean) {
+        val firstCol = matrix.map { it[0] }
+        val (idx, value) = binarySearch(firstCol.toIntArray(), target)
+        if (value == target) {
+            Assertions.assertThat(value == target).isEqualTo(expected)
+            return
+        }
+
+        val (_, value2) = binarySearch(matrix[idx], target)
+        if (value2 == target) {
+            Assertions.assertThat(value2 == target).isEqualTo(expected)
+            return
+        }
+
+        Assertions.assertThat(value2 == target).isEqualTo(expected)
+    }
+
+    fun binarySearch(array: IntArray, target: Int): Pair<Int, Int> {
+        var start = 0
+        var end = array.size - 1
+        var mid:Int
+        while (start <= end) {
+            mid = (start + end) / 2
+            if (array[mid] == target) {
+                return mid to array[mid]
+            }
+            if (array[mid] > target) {
+                end = mid - 1
+            } else {
+                start = mid + 1
+            }
+        }
+        mid = (start + end) / 2
+        return mid to array[mid]
+    }
+
     companion object {
 
         @JvmStatic
@@ -74,6 +120,38 @@ class NeetCodes04 {
                 arguments(intArrayOf(2,7,11,15), 9, intArrayOf(1,2)),
                 arguments(intArrayOf(2,3,4), 6, intArrayOf(1,3)),
                 arguments(intArrayOf(-1,0), -1, intArrayOf(1,2))
+            )
+
+        @JvmStatic
+        fun searchMatrixProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    arrayOf(
+                        intArrayOf(1,3,5,7),
+                        intArrayOf(10,11,16,20),
+                        intArrayOf(23,30,34,60)
+                    ),
+                    3,
+                    true
+                ),
+                arguments(
+                    arrayOf(
+                        intArrayOf(1,3,5,7),
+                        intArrayOf(10,11,16,20),
+                        intArrayOf(23,30,34,60)
+                    ),
+                    13,
+                    false
+                ),
+                arguments(
+                    arrayOf(
+                        intArrayOf(1,3,5,7),
+                        intArrayOf(10,11,16,20),
+                        intArrayOf(23,30,34,50)
+                    ),
+                    11,
+                    true
+                )
             )
     }
 
