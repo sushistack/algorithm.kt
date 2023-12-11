@@ -104,6 +104,28 @@ class NeetCodes04 {
         return mid to array[mid]
     }
 
+    @Tag("Medium")
+    @Tag("SlideWindow")
+    @ParameterizedTest
+    @MethodSource("lengthOfLongestSubstringProvider")
+    @DisplayName("""Given a string s, find the length of the longest substring without repeating characters.""")
+    fun lengthOfLongestSubstring(s: String, expected: Int) {
+        var longest = 0
+        var l = 0
+        val charSet = HashSet<Char>()
+
+        for (r in s.indices) {
+            while (charSet.contains(s[r])) {
+                charSet.remove(s[l])
+                l += 1
+            }
+            charSet.add(s[r])
+            longest = max(longest, r - l + 1)
+        }
+
+        Assertions.assertThat(longest).isEqualTo(expected)
+    }
+
     companion object {
 
         @JvmStatic
@@ -152,6 +174,15 @@ class NeetCodes04 {
                     11,
                     true
                 )
+            )
+
+        @JvmStatic
+        fun lengthOfLongestSubstringProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments("abcabcbb", 3),
+                arguments("bbbbb", 1),
+                arguments("pwwkew", 3),
+                arguments(" ", 1),
             )
     }
 
