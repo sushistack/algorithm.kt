@@ -126,6 +126,46 @@ class NeetCodes04 {
         Assertions.assertThat(longest).isEqualTo(expected)
     }
 
+    @Tag("Easy")
+    @Tag("LinkedList")
+    @ParameterizedTest
+    @MethodSource("mergeTwoListsProvider")
+    @DisplayName("""You are given the heads of two sorted linked lists list1 and list2.
+        Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
+        Return the head of the merged linked list.
+    """)
+    fun mergeTwoLists(list1: ListNode?, list2: ListNode?) {
+        if (list1 == null) {
+            return
+        }
+
+        if (list2 == null) {
+            return
+        }
+        val (root, n2) = if (list1.`val` < list2.`val`) list1 to list2 else list2 to list1
+
+        var cur: ListNode? = n2
+        val valueList = mutableListOf<Int>()
+        while (cur != null) {
+            valueList.add(cur.`val`)
+            cur = cur.next
+        }
+
+        for (value in valueList) {
+            var curr: ListNode? = root
+            while (curr != null) {
+                var next = curr.next
+                if (value >= curr.`val` && value <= (next?.`val` ?: Int.MAX_VALUE)) {
+                    curr.next = ListNode(value).also { it.next = next }
+                    break
+                }
+                curr = next
+            }
+        }
+
+        println(root)
+    }
+
     companion object {
 
         @JvmStatic
@@ -184,6 +224,25 @@ class NeetCodes04 {
                 arguments("pwwkew", 3),
                 arguments(" ", 1),
             )
+
+        @JvmStatic
+        fun mergeTwoListsProvider(): Stream<Arguments> {
+            val n1 = ListNode(4)
+            val n2 = ListNode(2).also { it.next = n1 }
+            val n3 = ListNode(1).also { it.next = n2 }
+
+            val n21 = ListNode(4)
+            val n22 = ListNode(3).also { it.next = n21 }
+            val n23 = ListNode(1).also { it.next = n22 }
+
+            return Stream.of(
+                arguments(n3, n23)
+            )
+        }
+
     }
 
+    class ListNode(var `val`: Int) {
+        var next: ListNode? = null
+    }
 }
