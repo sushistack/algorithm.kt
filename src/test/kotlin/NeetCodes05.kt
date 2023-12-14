@@ -27,7 +27,7 @@ class NeetCodes05 {
         Assertions.assertThat(maxDepth).isEqualTo(expected)
     }
 
-    fun depthDfs(node: TreeNode?, depth: Int) {
+    private fun depthDfs(node: TreeNode?, depth: Int) {
         if (node == null) {
             maxDepth = maxOf(depth, maxDepth)
             return
