@@ -51,7 +51,7 @@ class NeetCodes05 {
         Assertions.assertThat(combinations.map { it.sorted() }.distinct()).isEqualTo(expected)
     }
 
-    fun dfs4CombinationSum(picked: IntArray, candidates: IntArray, target: Int) {
+    private fun dfs4CombinationSum(picked: IntArray, candidates: IntArray, target: Int) {
         if (picked.sum() == target) {
             combinations.add(picked.toList())
         }
