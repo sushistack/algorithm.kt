@@ -34,8 +34,39 @@ class NeetCodes05 {
         depthDfs(node.right, depth + 1)
     }
 
+    // 다른 풀이가 더 효과적
+    @Tag("Medium")
+    @Tag("BackTracking")
+    @ParameterizedTest
+    @MethodSource("combinationSumProvider")
+    @DisplayName("""Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target.
+        You may return the combinations in any order.
+        The same number may be chosen from candidates an unlimited number of times. Two combinations are unique if the 
+        frequency of at least one of the chosen numbers is different.
+        The test cases are generated such that the number of unique combinations that sum up to target is less than 150 combinations for the given input.
+    """)
+    fun combinationSum(candidates: IntArray, target: Int, expected: List<List<Int>>) {
+        combinations = mutableListOf()
+        dfs4CombinationSum(intArrayOf(), candidates, target)
+        Assertions.assertThat(combinations.map { it.sorted() }.distinct()).isEqualTo(expected)
+    }
+
+    fun dfs4CombinationSum(picked: IntArray, candidates: IntArray, target: Int) {
+        if (picked.sum() == target) {
+            combinations.add(picked.toList())
+        }
+
+        for (candidate in candidates) {
+            if (picked.sum() + candidate > target) continue
+            val nPicked = picked.toMutableList()
+            nPicked.add(candidate)
+            dfs4CombinationSum(nPicked.toIntArray(), candidates, target)
+        }
+    }
+
     companion object {
         var maxDepth = 0
+        var combinations = mutableListOf<List<Int>>()
 
         @JvmStatic
         fun maxDepthProvider(): Stream<Arguments> {
@@ -53,6 +84,13 @@ class NeetCodes05 {
             return Stream.of(arguments(node5, 3))
         }
 
+        @JvmStatic
+        fun combinationSumProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(intArrayOf(2,3,6,7), 7, listOf(listOf(2,2,3), listOf(7))),
+                arguments(intArrayOf(2,3,5), 8, listOf(listOf(2,2,2,2), listOf(2,3,3), listOf(3,5))),
+                arguments(intArrayOf(2), 1, listOf<List<Int>>()),
+            )
     }
 
     class TreeNode(var `val`: Int) {
