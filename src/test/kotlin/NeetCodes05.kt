@@ -1,3 +1,5 @@
+import com.sun.source.tree.Tree
+import net.bytebuddy.implementation.bytecode.ShiftLeft
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Tag
@@ -5,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.util.*
 import java.util.stream.Stream
 
 class NeetCodes05 {
@@ -64,6 +67,30 @@ class NeetCodes05 {
         }
     }
 
+    @Tag("Medium")
+    @Tag("Trees")
+    @ParameterizedTest
+    @MethodSource("levelOrderProvider")
+    @DisplayName("Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).")
+    fun levelOrder(root: TreeNode?, expected: List<List<Int>>) {
+        if (root == null) return
+        val q = LinkedList<Pair<TreeNode, Int>>()
+        q.offer(root to 0)
+
+        val mapByLevel = mutableMapOf<Int, MutableList<Int>>()
+        while (q.isNotEmpty()) {
+            val (curNode, level) = q.poll()
+            val list = mapByLevel[level] ?: mutableListOf()
+            list.add(curNode.`val`)
+            mapByLevel[level] = list
+
+            curNode.left?.let { q.offer(it to (level + 1)) }
+            curNode.right?.let { q.offer(it to (level + 1)) }
+        }
+        val answer: List<List<Int>> = mapByLevel.entries.sortedBy { it.key }.map { it.value }
+        println(answer)
+    }
+
     companion object {
         var maxDepth = 0
         var combinations = mutableListOf<List<Int>>()
@@ -91,6 +118,22 @@ class NeetCodes05 {
                 arguments(intArrayOf(2,3,5), 8, listOf(listOf(2,2,2,2), listOf(2,3,3), listOf(3,5))),
                 arguments(intArrayOf(2), 1, listOf<List<Int>>()),
             )
+
+        @JvmStatic
+        fun levelOrderProvider(): Stream<Arguments> {
+            val node1 = TreeNode(7)
+            val node2 = TreeNode(15)
+            val node3 = TreeNode(20).also {
+                it.left = node2
+                it.right = node1
+            }
+            val node4  = TreeNode(9)
+            val node5 = TreeNode(3).also {
+                it.left = node4
+                it.right = node3
+            }
+            return Stream.of(arguments(node5, listOf(listOf(3), listOf(9, 20), listOf(15, 7))))
+        }
     }
 
     class TreeNode(var `val`: Int) {
