@@ -91,6 +91,32 @@ class NeetCodes05 {
         println(answer)
     }
 
+    @Tag("Easy")
+    @Tag("1D DynamicProgramming")
+    @ParameterizedTest
+    @MethodSource("minCostClimbingStairsProvider")
+    @DisplayName("""You are given an integer array cost where cost[i] is the cost of ith step on a staircase. Once you pay the cost, you can either climb one or two steps.
+        You can either start from the step with index 0, or the step with index 1.
+        Return the minimum cost to reach the top of the floor.
+    """)
+    fun minCostClimbingStairs(cost: IntArray, expected: Int) {
+        if (cost.size <= 2) {
+            Assertions.assertThat(cost.min()).isEqualTo(expected)
+            return
+        }
+
+        val dp = IntArray(1007) { 0 }
+        dp[0] = cost[0]
+        dp[1] = cost[1]
+
+        for (i in 2..cost.lastIndex) {
+            dp[i] = minOf(dp[i - 1], dp[i - 2]) + cost[i]
+        }
+        dp[cost.size] = minOf(dp[cost.lastIndex], dp[cost.lastIndex - 1])
+
+        Assertions.assertThat(dp[cost.size]).isEqualTo(expected)
+    }
+
     companion object {
         var maxDepth = 0
         var combinations = mutableListOf<List<Int>>()
@@ -134,6 +160,13 @@ class NeetCodes05 {
             }
             return Stream.of(arguments(node5, listOf(listOf(3), listOf(9, 20), listOf(15, 7))))
         }
+
+        @JvmStatic
+        fun minCostClimbingStairsProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(intArrayOf(10,15,20), 15),
+                arguments(intArrayOf(1,100,1,1,1,100,1,1,100,1), 6)
+            )
     }
 
     class TreeNode(var `val`: Int) {
