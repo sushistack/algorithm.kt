@@ -1,5 +1,3 @@
-import com.sun.source.tree.Tree
-import net.bytebuddy.implementation.bytecode.ShiftLeft
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Tag
@@ -117,6 +115,52 @@ class NeetCodes05 {
         Assertions.assertThat(dp[cost.size]).isEqualTo(expected)
     }
 
+    @Tag("Medium")
+    @Tag("Graph")
+    @ParameterizedTest
+    @MethodSource("maxAreaOfIslandProvider")
+    @DisplayName("""You are given an m x n binary matrix grid. An island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+        The area of an island is the number of cells with a value 1 in the island.
+        Return the maximum area of an island in grid. If there is no island, return 0.
+    """)
+    fun maxAreaOfIsland(grid: Array<IntArray>, expected: Int) {
+        var maxLand = 0
+        val visited = grid.map { it.map { false }.toMutableList() }
+        for (r in grid.indices) {
+            for (c in grid[r].indices) {
+                maxLand = maxOf(maxLand, bfs(grid, r, c, visited))
+            }
+        }
+        Assertions.assertThat(maxLand).isEqualTo(expected)
+    }
+
+    private fun bfs(grid: Array<IntArray>, r: Int, c: Int, visited: List<MutableList<Boolean>>): Int {
+        if (grid[r][c] == 0 || visited[r][c]) return 0
+        val q = LinkedList<Point>()
+        q.offer(Point(r, c))
+        visited[r][c] = true
+
+        var land = 0
+        val nexts = listOf(1 to 0, -1 to 0, 0 to 1, 0 to -1)
+        while (q.isNotEmpty()) {
+            val cur = q.poll()
+            land += 1
+
+            for (next in nexts) {
+                val nr = cur.r + next.first
+                var nc = cur.c + next.second
+                if (nr < 0 || nr > grid.lastIndex || nc < 0 || nc > grid[0].lastIndex) continue
+                if (grid[nr][nc] == 0 || visited[nr][nc]) continue
+
+                visited[nr][nc] = true
+                q.offer(Point(nr, nc))
+            }
+        }
+        return land
+    }
+
+    data class Point(val r: Int, val c: Int)
+
     companion object {
         var maxDepth = 0
         var combinations = mutableListOf<List<Int>>()
@@ -166,6 +210,31 @@ class NeetCodes05 {
             Stream.of(
                 arguments(intArrayOf(10,15,20), 15),
                 arguments(intArrayOf(1,100,1,1,1,100,1,1,100,1), 6)
+            )
+
+        @JvmStatic
+        fun maxAreaOfIslandProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    arrayOf(
+                        intArrayOf(0,0,1,0,0,0,0,1,0,0,0,0,0), intArrayOf(0,0,0,0,0,0,0,1,1,1,0,0,0),
+                        intArrayOf(0,1,1,0,1,0,0,0,0,0,0,0,0), intArrayOf(0,1,0,0,1,1,0,0,1,0,1,0,0),
+                        intArrayOf(0,1,0,0,1,1,0,0,1,1,1,0,0), intArrayOf(0,0,0,0,0,0,0,0,0,0,1,0,0),
+                        intArrayOf(0,0,0,0,0,0,0,1,1,1,0,0,0), intArrayOf(0,0,0,0,0,0,0,1,1,0,0,0,0)
+                    ),
+                    6
+                ),
+                arguments(
+                    arrayOf(intArrayOf(0,0,0,0,0,0,0,0)),
+                    0
+                ),
+                arguments(
+                    arrayOf(
+                        intArrayOf(1,1,0,0,0), intArrayOf(1,1,0,0,0),
+                        intArrayOf(0,0,0,1,1), intArrayOf(0,0,0,1,1)
+                    ),
+                    4
+                )
             )
     }
 
