@@ -195,6 +195,40 @@ class NeetCodes05 {
         Assertions.assertThat(answer).isEqualTo(expected)
     }
 
+    @Tag("Medium")
+    @Tag("Interval")
+    @ParameterizedTest
+    @MethodSource("mergeProvider")
+    @DisplayName("""Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals,
+        and return an array of the non-overlapping intervals that cover all the intervals in the input
+    """)
+    fun merge(intervals: Array<IntArray>, expected: Array<IntArray>) {
+        val sorted = intervals.sortedBy { it[0] }.map { Range(it[0], it[1]) }
+
+        for (i in 0..<sorted.size - 1) {
+            val cur = sorted[i]
+            val next = sorted[i + 1]
+            if (cur.end >= next.start) {
+                val min = minOf(cur.start, next.start)
+                val max = maxOf(cur.end, next.end)
+
+                cur.start = min
+                cur.end = min
+                next.start = min
+                next.end = max
+                cur.remove = true
+            }
+        }
+        val answer = sorted
+            .filter { range -> !range.remove }
+            .map { intArrayOf(it.start, it.end) }
+            .toTypedArray()
+
+        Assertions.assertThat(answer).isEqualTo(expected)
+    }
+
+    data class Range(var start: Int, var end: Int, var remove: Boolean = false)
+
     companion object {
         var maxDepth = 0
         var combinations = mutableListOf<List<Int>>()
@@ -276,6 +310,23 @@ class NeetCodes05 {
             Stream.of(
                 arguments(intArrayOf(2,7,4,1,8,1), 1),
                 arguments(intArrayOf(1), 1)
+            )
+
+        @JvmStatic
+        fun mergeProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    arrayOf(intArrayOf(1,3), intArrayOf(2,6), intArrayOf(8,10), intArrayOf(15,18)),
+                    arrayOf(intArrayOf(1,6), intArrayOf(8,10), intArrayOf(15,18))
+                ),
+                arguments(
+                    arrayOf(intArrayOf(1,4), intArrayOf(4,5)),
+                    arrayOf(intArrayOf(1,5)),
+                ),
+                arguments(
+                    arrayOf(intArrayOf(1,4), intArrayOf(0,2), intArrayOf(3,5)),
+                    arrayOf(intArrayOf(0,5)),
+                )
             )
     }
 
