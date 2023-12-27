@@ -1,3 +1,4 @@
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
@@ -36,6 +37,50 @@ class NeetCodes07 {
 
         anagramMap.values.map { it.toList() }
         // Assertions.assertThat(anagramMap.values).isEqualTo(expected)
+    }
+
+    // n * n * log n = tle
+    // n * n 으로 끝내야 함
+    @Tag("Medium")
+    @Tag("TwoPointer")
+    @ParameterizedTest
+    @MethodSource("threeSumProvider")
+    @DisplayName("""
+        Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+        Notice that the solution set must not contain duplicate triplets.
+    """)
+    fun threeSum(nums: IntArray, expected: List<List<Int>>) {
+        val sorted = nums.sorted()
+        val answer = mutableListOf<List<Int>>()
+        for (i in sorted.indices) {
+            for (j in sorted.indices) {
+                if (i == j) continue
+                val subSum = sorted[i] + sorted[j]
+                val idx = binarySearch(sorted.toIntArray(), -subSum)
+                if (idx != -1 && idx != i && idx != j) {
+                    answer.add(listOf(sorted[i], sorted[j], sorted[idx]).sorted())
+                }
+            }
+        }
+
+        Assertions.assertThat(answer.distinct()).isEqualTo(expected)
+    }
+
+    private fun binarySearch(array: IntArray, target: Int): Int {
+        var start = 0
+        var end = array.size - 1
+
+        while (start <= end) {
+            val mid = (start + end) / 2
+            if (array[mid] == target) {
+                return mid
+            } else if (array[mid] < target) {
+                start = mid + 1
+            } else {
+                end = mid - 1
+            }
+        }
+        return -1
     }
 
     private fun isAnagrams(str1: String, str2: String): Boolean {
@@ -81,6 +126,23 @@ class NeetCodes07 {
                 arguments(
                     arrayOf("hhhhu","tttti","tttit","hhhuh","hhuhh","tittt"),
                     listOf(listOf("tittt","tttit","tttti"), listOf("hhhhu","hhhuh","hhuhh"))
+                ),
+            )
+
+        @JvmStatic
+        fun threeSumProvider(): Stream<Arguments> =
+            Stream.of(
+                arguments(
+                    intArrayOf(-1,0,1,2,-1,-4),
+                    listOf(listOf(-1,-1,2), listOf(-1,0,1))
+                ),
+                arguments(
+                    intArrayOf(0,1,1),
+                    listOf<List<String>>()
+                ),
+                arguments(
+                    intArrayOf(0,0,0),
+                    listOf(listOf(0,0,0))
                 ),
             )
     }
