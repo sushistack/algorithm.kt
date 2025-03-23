@@ -18,20 +18,16 @@ class NeetCodes07 {
         val anagramMap = mutableMapOf<String, MutableList<String>>()
 
         for (str in strs) {
-            if (anagramMap.isEmpty()) {
+            var isAdded = false
+            for (entry in anagramMap.entries) {
+                if (isAnagrams(entry.key, str)) {
+                    entry.value.add(str)
+                    isAdded = true
+                    break
+                }
+            }
+            if (!isAdded) {
                 anagramMap[str] = mutableListOf(str)
-            } else {
-                var isAdded = false
-                for (entry in anagramMap.entries) {
-                    if (isAnagrams(entry.key, str)) {
-                        entry.value.add(str)
-                        isAdded = true
-                        break
-                    }
-                }
-                if (!isAdded) {
-                    anagramMap[str] = mutableListOf(str)
-                }
             }
         }
 
